@@ -12,13 +12,6 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * A simple example to introduce building forms. As your real application is probably much
- * more complicated than this example, you could re-use this form in multiple places. This
- * example component is only used in MainView.
- * In a real world application you'll most likely using a common super class for all your
- * forms - less code, better UX.
- */
 @SpringComponent
 @UIScope
 public class CustomerEditor extends VerticalLayout implements KeyNotifier {
@@ -31,8 +24,8 @@ public class CustomerEditor extends VerticalLayout implements KeyNotifier {
     private Customer customer;
 
     /* Fields to edit properties in Customer entity */
-    TextField firstName = new TextField("First name");
-    TextField lastName = new TextField("Last name");
+    TextField titulo = new TextField("First name2");
+    TextField sinopsis = new TextField("Last name");
 
     /* Action buttons */
     // TODO why more code?
@@ -48,7 +41,7 @@ public class CustomerEditor extends VerticalLayout implements KeyNotifier {
     public CustomerEditor(CustomerRepository repository) {
         this.repository = repository;
 
-        add(firstName, lastName, actions);
+        add(titulo, sinopsis, actions);
 
         // bind using naming convention
         binder.bindInstanceFields(this);
@@ -105,7 +98,7 @@ public class CustomerEditor extends VerticalLayout implements KeyNotifier {
         setVisible(true);
 
         // Focus first name initially
-        firstName.focus();
+        titulo.focus();
     }
 
     public void setChangeHandler(ChangeHandler h) {

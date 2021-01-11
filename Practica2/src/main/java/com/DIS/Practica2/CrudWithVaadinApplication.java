@@ -2,11 +2,16 @@ package com.DIS.Practica2;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import com.google.gson.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 public class CrudWithVaadinApplication {
@@ -18,41 +23,49 @@ public class CrudWithVaadinApplication {
     }
 
     @Bean
-    public CommandLineRunner loadData(CustomerRepository repository) {
+    public CommandLineRunner loadData(CustomerRepository repository) throws FileNotFoundException {
+        JsonParser parser = new JsonParser();
+        Object object = parser.parse(new FileReader("Peliculas.json"));
+        JsonObject gsonObj = (JsonObject) object;
+        gsonObj = gsonObj.getAsJsonObject("Videoteca");
+        gsonObj = gsonObj.getAsJsonObject("Peliculas");
+        JsonArray demarcation = gsonObj.get("Pelicula").getAsJsonArray();
+
         return (args) -> {
             // save customers
-            repository.save(new Customer("Diego", "Abad"));
-            repository.save(new Customer("Juan", "Rodríguez"));
-            repository.save(new Customer("Pedro", "Arranz"));
-            repository.save(new Customer("David", "Losada"));
-            repository.save(new Customer("Miguel", "Santos"));
-            repository.save(new Customer("Antonio", "Wells"));
+            for (JsonElement demarc : demarcation) {
+                String titulo = ((JsonObject) demarc).get("Titulo").getAsString();
+                String sinopsis = ((JsonObject) demarc).get("Sinopsis").getAsString();
+                String imbd = ((JsonObject) demarc).get("IMBD").getAsString();
+                String genero;
+                try{
+                    genero = ((JsonObject) demarc).get("Genero").getAsString();
+                }catch (Exception e) {
+                    genero="None";
+                }
+                JsonObject autors = demarc.getAsJsonObject();
+                autors = autors.getAsJsonObject("Reparto");
+                int numeroActores=0;
+                try{// si hay mas de un actor
+                    JsonArray autores = autors.get("Actor").getAsJsonArray();
+                    for (JsonElement demarc1 : autores) {
+                        numeroActores+=1;
+                    }
+                }catch (Exception e1) {// si solo hay un actor, dara una excepcion y se metera aqui
+                    autors = autors.getAsJsonObject("Actor");
+                    numeroActores=1;
+                }
+                List<String> autores = new ArrayList<String>();
+                autores.add("d");
+
+
+
+                repository.save(new Customer(titulo, sinopsis, genero, imbd, numeroActores));
+            }
 
             // fetch all customers
             log.info("Customers found with findAll():");
-            log.info("-------------------------------");
-            for (Customer customer : repository.findAll()) {
-                log.info(customer.toString());
-            }
-            log.info("");
 
-            // fetch an individual customer by ID
-            Customer customer = repository.findById(1L).get();
-            log.info("Customer found with findOne(1L):");
-            log.info("--------------------------------");
-            log.info(customer.toString());
-            log.info("");
-
-            // fetch customers by last name
-            log.info("Customer found with findByLastNameStartsWithIgnoreCase('Wells'):");
-            log.info("--------------------------------------------");
-            for (Customer bauer : repository
-                    .findByLastNameStartsWithIgnoreCase("Wells")) {
-                log.info(bauer.toString());
-            }
-            Customer baus =repository.findById(2L).get();
-            log.info(baus.toString());
-            log.info("");
         };
     }
 

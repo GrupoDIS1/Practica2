@@ -1,5 +1,6 @@
 package com.DIS.Practica2;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,44 +12,74 @@ public class Customer {
     @GeneratedValue
     private Long id;
 
-    private String firstName;
+    private String titulo;
 
-    private String lastName;
+    @Column(length=1000)
+    private String sinopsis;
 
-    private String edad;
+    private String genero;
+
+    private String imbd;
+
+    private int numerodeactores;
 
     protected Customer() {
     }
 
-    public Customer(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public Customer(String Titulo, String Sinopsis,String Genero,String IMBD,Integer numerodeactores) {
+        this.titulo = Titulo;
+        this.sinopsis = Sinopsis;
+        this.genero = Genero;
+        this.imbd=IMBD;
+        this.numerodeactores=numerodeactores;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setTitulo(String Titulo) {
+        this.titulo = Titulo;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getSinopsis() {
+        return sinopsis;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setSinopsis(String Sinopsis) {
+        this.sinopsis = Sinopsis;
     }
 
+    public String getGenero() {
+        return genero;
+    }
+
+    public void setGenero(String Genero) {
+        this.genero = Genero;
+    }
+
+    public String getImbd() {
+        return imbd;
+    }
+
+    public void setImbd(String imbd) {
+        this.imbd = imbd;
+    }
+
+    public int getNumerodeactores() {
+        return numerodeactores;
+    }
+
+    public void setNumerodeactores(int numerodeactores) {
+        this.numerodeactores = numerodeactores;
+    }
     @Override
     public String toString() {
-        return String.format("Customer[id=%d, firstName='%s', lastName='%s']", id,
-                firstName, lastName);
+        return String.format("Customer[id=%d, Titulo='%s', Sinopsis='%s']", id, titulo, sinopsis);
     }
 
 }
