@@ -56,7 +56,7 @@ public class CrudWithVaadinApplication {
                     numeroActores=1;
                 }
                 List<String> autores = new ArrayList<String>();
-                autores.add("d");
+                autores.add("dw");
 
 
 
