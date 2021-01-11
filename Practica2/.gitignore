@@ -14,7 +14,11 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-/prueba
+/node_modules
+package-lock.json
+webpack.generated.js
+package.json
+webpack.config.js
 .idea
 *.iws
 *.iml
