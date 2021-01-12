@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 @Route
 public class MainView extends VerticalLayout {
 
@@ -30,7 +32,7 @@ public class MainView extends VerticalLayout {
 
     private final Button addNewBtn;
 
-    public MainView(CustomerRepository repo, CustomerEditor editor) {
+    public MainView(AutoresBBDD aut,CustomerRepository repo, CustomerEditor editor) {
 
         this.repo = repo;
         this.editor = editor;
@@ -43,9 +45,11 @@ public class MainView extends VerticalLayout {
         add(actions, grid, editor);
 
         grid.setHeight("300px");
-        //grid.removeColumnByKey("age");
-        grid.setColumns("id", "titulo", "sinopsis","genero","imbd","numerodeactores");
-        grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
+
+        grid.removeColumnByKey("id");
+        grid.setColumns("titulo", "sinopsis","genero","imbd","numerodeactores");
+
+
 
         filter.setPlaceholder("Filter by last name");
 
@@ -58,7 +62,7 @@ public class MainView extends VerticalLayout {
         // Connect selected Customer to editor or hide if none is selected
         grid.asSingleSelect().addValueChangeListener(e -> {
             editor.editCustomer(e.getValue());
-            modal(e.getValue());
+            modal(aut,e.getValue());
         });
 
         // Instantiate and edit new Customer the new button is clicked
@@ -83,15 +87,18 @@ public class MainView extends VerticalLayout {
             grid.setItems(repo.findByTituloStartsWithIgnoreCase(filterText));
         }
     }
-    void modal(Customer c) {
+    void modal(AutoresBBDD aut,Customer c) {
         Dialog dialog = new Dialog();
-
         dialog.setCloseOnEsc(false);
         dialog.setCloseOnOutsideClick(false);
         dialog.add(new HorizontalLayout(new Html("<b>Titulo: </b>"), new Text(c.getTitulo())));
         dialog.add(new HorizontalLayout(new Html("<b>Sinopsis: </b>"), new Text(c.getSinopsis())));
         dialog.add(new HorizontalLayout(new Html("<b>Genero: </b>"), new Text(c.getGenero())));
         dialog.add(new HorizontalLayout(new Html("<b>IMBD: </b>"), new Text(c.getImbd())));
+        for (autores autorActual : aut.findByIdPelicula(c.getId())) {
+            dialog.add(new HorizontalLayout(new Html("<b>Autor: </b>"), new Text(autorActual.getNombre())));
+            dialog.add(new HorizontalLayout(new Html("<b>Enlace: </b>"), new Text(autorActual.getEnlace())));
+        }
         //dialog.add(new Text(c.getTitulo()));
         Button confirmButton = new Button("Editar", event -> { dialog.close(); });
         Button cancelButton = new Button("Cancelar", event -> { dialog.close(); });
