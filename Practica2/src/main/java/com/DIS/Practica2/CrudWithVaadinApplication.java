@@ -55,8 +55,6 @@ public class CrudWithVaadinApplication {
                     autors = autors.getAsJsonObject("Actor");
                     numeroActores=1;
                 }
-                List<String> autores = new ArrayList<String>();
-                autores.add("dw");
 
 
 

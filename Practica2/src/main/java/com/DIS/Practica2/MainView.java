@@ -1,7 +1,11 @@
 package com.DIS.Practica2;
 
+import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -54,6 +58,7 @@ public class MainView extends VerticalLayout {
         // Connect selected Customer to editor or hide if none is selected
         grid.asSingleSelect().addValueChangeListener(e -> {
             editor.editCustomer(e.getValue());
+            modal(e.getValue());
         });
 
         // Instantiate and edit new Customer the new button is clicked
@@ -78,6 +83,22 @@ public class MainView extends VerticalLayout {
             grid.setItems(repo.findByTituloStartsWithIgnoreCase(filterText));
         }
     }
-    // end::listCustomers[]
+    void modal(Customer c) {
+        Dialog dialog = new Dialog();
+
+        dialog.setCloseOnEsc(false);
+        dialog.setCloseOnOutsideClick(false);
+        dialog.add(new HorizontalLayout(new Html("<b>Titulo: </b>"), new Text(c.getTitulo())));
+        dialog.add(new HorizontalLayout(new Html("<b>Sinopsis: </b>"), new Text(c.getSinopsis())));
+        dialog.add(new HorizontalLayout(new Html("<b>Genero: </b>"), new Text(c.getGenero())));
+        dialog.add(new HorizontalLayout(new Html("<b>IMBD: </b>"), new Text(c.getImbd())));
+        //dialog.add(new Text(c.getTitulo()));
+        Button confirmButton = new Button("Editar", event -> { dialog.close(); });
+        Button cancelButton = new Button("Cancelar", event -> { dialog.close(); });
+        HorizontalLayout actions2 = new HorizontalLayout(confirmButton, cancelButton);
+        dialog.add(actions2);
+
+        dialog.open();
+    }
 
 }
