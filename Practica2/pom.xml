@@ -11,6 +11,7 @@
 	<groupId>com.DIS</groupId>
 	<artifactId>Practica2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>Practica2</name>
 	<description>Practica Realizada por: David González, David Arranz, Jesús Tejada y Marcos Rodríguez</description>
 

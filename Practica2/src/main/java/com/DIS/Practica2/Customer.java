@@ -23,7 +23,7 @@ public class Customer {
 
     private String imbd;
 
-    private int numerodeactores;
+    private int numeroDeActores;
 
 
     protected Customer() {
@@ -34,7 +34,7 @@ public class Customer {
         this.sinopsis = Sinopsis;
         this.genero = Genero;
         this.imbd=IMBD;
-        this.numerodeactores=numerodeactores;
+        this.numeroDeActores=numerodeactores;
     }
 
     public Long getId() {
@@ -73,12 +73,12 @@ public class Customer {
         this.imbd = imbd;
     }
 
-    public int getNumerodeactores() {
-        return numerodeactores;
+    public int getNumeroDeActores() {
+        return numeroDeActores;
     }
 
-    public void setNumerodeactores(int numerodeactores) {
-        this.numerodeactores = numerodeactores;
+    public void setNumeroDeActores(int numerodeactores) {
+        this.numeroDeActores = numerodeactores;
     }
     @Override
     public String toString() {

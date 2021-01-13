@@ -47,7 +47,7 @@ public class MainView extends VerticalLayout {
         grid.setHeight("300px");
 
         grid.removeColumnByKey("id");
-        grid.setColumns("titulo", "sinopsis","genero","imbd","numerodeactores");
+        grid.setColumns("titulo", "sinopsis","genero","imbd","numeroDeActores");
 
 
 
@@ -61,7 +61,7 @@ public class MainView extends VerticalLayout {
 
         // Connect selected Customer to editor or hide if none is selected
         grid.asSingleSelect().addValueChangeListener(e -> {
-            editor.editCustomer(e.getValue());
+            //editor.editCustomer(e.getValue());
             modal(aut,e.getValue());
         });
 
@@ -88,6 +88,31 @@ public class MainView extends VerticalLayout {
         }
     }
     void modal(AutoresBBDD aut,Customer c) {
+        try{
+            Dialog dialog = new Dialog();
+            dialog.setCloseOnEsc(false);
+            dialog.setCloseOnOutsideClick(false);
+            dialog.add(new HorizontalLayout(new Html("<b>Titulo: </b>"), new Text(c.getTitulo())));
+            dialog.add(new HorizontalLayout(new Html("<b>Sinopsis: </b>"), new Text(c.getSinopsis())));
+            dialog.add(new HorizontalLayout(new Html("<b>Genero: </b>"), new Text(c.getGenero())));
+            dialog.add(new HorizontalLayout(new Html("<b>IMBD: </b>"), new Text(c.getImbd())));
+            for (autores autorActual : aut.findByIdPelicula(c.getId())) {
+                dialog.add(new HorizontalLayout(new Html("<b>Autor: </b>"), new Text(autorActual.getNombre())));
+                dialog.add(new HorizontalLayout(new Html("<b>Enlace: </b>"), new Text(autorActual.getEnlace())));
+            }
+            //dialog.add(new Text(c.getTitulo()));
+            Button confirmButton = new Button("Editar", event -> { dialog.close(); modaleditar(aut,c); });
+            Button cancelButton = new Button("Cancelar", event -> { dialog.close(); });
+            HorizontalLayout actions2 = new HorizontalLayout(confirmButton, cancelButton);
+            dialog.add(actions2);
+
+            dialog.open();
+        }catch (Exception e) {
+
+        }
+    }
+
+    void modaleditar(AutoresBBDD aut,Customer c) {
         Dialog dialog = new Dialog();
         dialog.setCloseOnEsc(false);
         dialog.setCloseOnOutsideClick(false);
@@ -99,8 +124,7 @@ public class MainView extends VerticalLayout {
             dialog.add(new HorizontalLayout(new Html("<b>Autor: </b>"), new Text(autorActual.getNombre())));
             dialog.add(new HorizontalLayout(new Html("<b>Enlace: </b>"), new Text(autorActual.getEnlace())));
         }
-        //dialog.add(new Text(c.getTitulo()));
-        Button confirmButton = new Button("Editar", event -> { dialog.close(); });
+        Button confirmButton = new Button("Actualizar Datos", event -> { dialog.close(); });
         Button cancelButton = new Button("Cancelar", event -> { dialog.close(); });
         HorizontalLayout actions2 = new HorizontalLayout(confirmButton, cancelButton);
         dialog.add(actions2);
