@@ -64,6 +64,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.DIS.Practica2.CrudWithVaadinApplication</mainClass>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
