@@ -32,6 +32,7 @@ public class MainView extends VerticalLayout {
 
     private final Button addNewBtn;
 
+
     public MainView(AutoresBBDD aut,CustomerRepository repo, CustomerEditor editor) {
 
         this.repo = repo;
@@ -62,7 +63,7 @@ public class MainView extends VerticalLayout {
         // Connect selected Customer to editor or hide if none is selected
         grid.asSingleSelect().addValueChangeListener(e -> {
             //editor.editCustomer(e.getValue());
-            modal(aut,e.getValue());
+            modal(aut,e.getValue(),repo);
         });
 
         // Instantiate and edit new Customer the new button is clicked
@@ -87,7 +88,7 @@ public class MainView extends VerticalLayout {
             grid.setItems(repo.findByTituloStartsWithIgnoreCase(filterText));
         }
     }
-    void modal(AutoresBBDD aut,Customer c) {
+    void modal(AutoresBBDD aut,Customer c,CustomerRepository repo) {
         try{
             Dialog dialog = new Dialog();
             dialog.setCloseOnEsc(false);
@@ -101,7 +102,7 @@ public class MainView extends VerticalLayout {
                 dialog.add(new HorizontalLayout(new Html("<b>Enlace: </b>"), new Text(autorActual.getEnlace())));
             }
             //dialog.add(new Text(c.getTitulo()));
-            Button confirmButton = new Button("Editar", event -> { dialog.close(); modaleditar(aut,c); });
+            Button confirmButton = new Button("Editar", event -> { dialog.close(); modaleditar(aut,c,repo); });
             Button cancelButton = new Button("Cancelar", event -> { dialog.close(); });
             HorizontalLayout actions2 = new HorizontalLayout(confirmButton, cancelButton);
             dialog.add(actions2);
@@ -112,23 +113,38 @@ public class MainView extends VerticalLayout {
         }
     }
 
-    void modaleditar(AutoresBBDD aut,Customer c) {
+    void modaleditar(AutoresBBDD aut,Customer c,CustomerRepository repo) {
         Dialog dialog = new Dialog();
         dialog.setCloseOnEsc(false);
         dialog.setCloseOnOutsideClick(false);
-        dialog.add(new HorizontalLayout(new Html("<b>Titulo: </b>"), new Text(c.getTitulo())));
-        dialog.add(new HorizontalLayout(new Html("<b>Sinopsis: </b>"), new Text(c.getSinopsis())));
-        dialog.add(new HorizontalLayout(new Html("<b>Genero: </b>"), new Text(c.getGenero())));
-        dialog.add(new HorizontalLayout(new Html("<b>IMBD: </b>"), new Text(c.getImbd())));
+        TextField titulo = new TextField("Titulo");
+        titulo.setValue(c.getTitulo());
+        dialog.add(new HorizontalLayout(titulo));
+        TextField Sinopsis = new TextField("Sinopsis");
+        Sinopsis.setValue(c.getSinopsis());
+        dialog.add(new HorizontalLayout(Sinopsis));
+        TextField Genero = new TextField("Genero");
+        Genero.setValue(c.getGenero());
+        dialog.add(new HorizontalLayout(Genero));
+        TextField Imbd = new TextField("Imbd");
+        Imbd.setValue(c.getImbd());
+        dialog.add(new HorizontalLayout(Imbd));
         for (autores autorActual : aut.findByIdPelicula(c.getId())) {
-            dialog.add(new HorizontalLayout(new Html("<b>Autor: </b>"), new Text(autorActual.getNombre())));
-            dialog.add(new HorizontalLayout(new Html("<b>Enlace: </b>"), new Text(autorActual.getEnlace())));
-        }
-        Button confirmButton = new Button("Actualizar Datos", event -> { dialog.close(); });
-        Button cancelButton = new Button("Cancelar", event -> { dialog.close(); });
-        HorizontalLayout actions2 = new HorizontalLayout(confirmButton, cancelButton);
-        dialog.add(actions2);
+            TextField nombreautor = new TextField("Nombre autor");
+            nombreautor.setValue(autorActual.getNombre());
+            dialog.add(new HorizontalLayout(nombreautor));
+            TextField enlaceautor = new TextField("Enlace autor");
+            enlaceautor.setValue(autorActual.getEnlace());
+            dialog.add(new HorizontalLayout(enlaceautor));
 
+        }
+        
+
+        Button confirmButton = new Button("Aceptar", event -> { dialog.close();});
+        Button cancelButton = new Button("Cancelar", event -> { dialog.close(); });
+        Button EliminarButton = new Button("Eliminar",VaadinIcon.TRASH.create(), event -> { repo.delete(c);listCustomers("");dialog.close(); });
+        HorizontalLayout actions2 = new HorizontalLayout(confirmButton, cancelButton, EliminarButton);
+        dialog.add(actions2);
         dialog.open();
     }
 
