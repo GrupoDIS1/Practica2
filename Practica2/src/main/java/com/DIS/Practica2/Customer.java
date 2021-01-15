@@ -80,9 +80,5 @@ public class Customer {
     public void setNumeroDeActores(int numerodeactores) {
         this.numeroDeActores = numerodeactores;
     }
-    @Override
-    public String toString() {
-        return String.format("Customer[id=%d, Titulo='%s', Sinopsis='%s']", id, titulo, sinopsis);
-    }
 
 }

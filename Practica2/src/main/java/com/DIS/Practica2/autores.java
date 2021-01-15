@@ -32,4 +32,11 @@ public class autores {
     public String getEnlace() {
         return this.enlace;
     }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+    public void setEnlace(String enlace) {
+        this.enlace = enlace;
+    }
 }

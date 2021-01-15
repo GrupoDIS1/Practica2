@@ -9,6 +9,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
@@ -52,7 +53,7 @@ public class MainView extends VerticalLayout {
 
 
 
-        filter.setPlaceholder("Filter by last name");
+        filter.setPlaceholder("Buscar por Titulo");
 
         // Hook logic to components
 
@@ -67,7 +68,7 @@ public class MainView extends VerticalLayout {
         });
 
         // Instantiate and edit new Customer the new button is clicked
-        addNewBtn.addClickListener(e -> editor.editCustomer(new Customer("", "","","",0)));
+        addNewBtn.addClickListener(e -> modalnuevapelicula(aut,repo));
 
         // Listen changes made by the editor, refresh data from backend
         editor.setChangeHandler(() -> {
@@ -129,18 +130,37 @@ public class MainView extends VerticalLayout {
         TextField Imbd = new TextField("Imbd");
         Imbd.setValue(c.getImbd());
         dialog.add(new HorizontalLayout(Imbd));
+        int numerodeactores = c.getNumeroDeActores();
+        autores todoslosatuores[]= new autores[numerodeactores];
+        TextField nombreautor[]= new TextField[numerodeactores];
+        TextField enlaceautor[]= new TextField[numerodeactores];
+        int i =0;
         for (autores autorActual : aut.findByIdPelicula(c.getId())) {
-            TextField nombreautor = new TextField("Nombre autor");
-            nombreautor.setValue(autorActual.getNombre());
-            dialog.add(new HorizontalLayout(nombreautor));
-            TextField enlaceautor = new TextField("Enlace autor");
-            enlaceautor.setValue(autorActual.getEnlace());
-            dialog.add(new HorizontalLayout(enlaceautor));
-
+            todoslosatuores[i]=autorActual;
+            nombreautor[i] = new TextField("Nombre autor");
+            nombreautor[i].setValue(autorActual.getNombre());
+            dialog.add(new HorizontalLayout(nombreautor[i]));
+            enlaceautor[i] = new TextField("Enlace autor");
+            enlaceautor[i].setValue(autorActual.getEnlace());
+            dialog.add(new HorizontalLayout(enlaceautor[i]));
+            i++;
         }
-        
 
-        Button confirmButton = new Button("Aceptar", event -> { dialog.close();});
+
+        Button confirmButton = new Button("Aceptar", event -> {
+            c.setTitulo(titulo.getValue());
+            c.setSinopsis(Sinopsis.getValue());
+            c.setGenero(Genero.getValue());
+            c.setImbd(Imbd.getValue());
+            for(int x=0;x<numerodeactores;x++){
+                todoslosatuores[x].setNombre(nombreautor[x].getValue());
+                todoslosatuores[x].setEnlace(enlaceautor[x].getValue());
+                aut.save(todoslosatuores[x]);
+            }
+            repo.save(c);
+            listCustomers("");
+            dialog.close();
+        });
         Button cancelButton = new Button("Cancelar", event -> { dialog.close(); });
         Button EliminarButton = new Button("Eliminar",VaadinIcon.TRASH.create(), event -> { repo.delete(c);listCustomers("");dialog.close(); });
         HorizontalLayout actions2 = new HorizontalLayout(confirmButton, cancelButton, EliminarButton);
@@ -148,4 +168,33 @@ public class MainView extends VerticalLayout {
         dialog.open();
     }
 
+    void modalnuevapelicula(AutoresBBDD aut,CustomerRepository repo) {
+        Dialog dialog = new Dialog();
+        TextField titulo = new TextField("Titulo");
+        dialog.add(new HorizontalLayout(titulo));
+        TextField Sinopsis = new TextField("Sinopsis");
+        dialog.add(new HorizontalLayout(Sinopsis));
+        TextField Genero = new TextField("Genero");
+        dialog.add(new HorizontalLayout(Genero));
+        TextField Imbd = new TextField("Imbd");
+        dialog.add(new HorizontalLayout(Imbd));
+        NumberField NumeroActores = new NumberField("Numero de Actores");;
+        dialog.add(new HorizontalLayout(NumeroActores));
+
+
+
+
+        Button confirmButton = new Button("Aceptar", event -> {
+            Double nacto=NumeroActores.getValue();
+            int nmactores=nacto.intValue();
+            Customer nuevo = new Customer(titulo.getValue(), Sinopsis.getValue(), Genero.getValue(), Imbd.getValue(), nmactores);
+            repo.save(nuevo);
+            listCustomers("");
+            dialog.close();
+        });
+        Button cancelButton = new Button("Cancelar", event -> { dialog.close(); });
+        HorizontalLayout actions2 = new HorizontalLayout(confirmButton, cancelButton);
+        dialog.add(actions2);
+        dialog.open();
+    }
 }
