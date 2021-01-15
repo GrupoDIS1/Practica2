@@ -13,9 +13,6 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.spring.annotation.UIScope;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -25,7 +22,6 @@ public class MainView extends VerticalLayout {
 
     private final CustomerRepository repo;
 
-    private final CustomerEditor editor;
 
     final Grid<Customer> grid;
 
@@ -34,17 +30,16 @@ public class MainView extends VerticalLayout {
     private final Button addNewBtn;
 
 
-    public MainView(AutoresBBDD aut,CustomerRepository repo, CustomerEditor editor) {
+    public MainView(AutoresBBDD aut,CustomerRepository repo) {
 
         this.repo = repo;
-        this.editor = editor;
         this.grid = new Grid<>(Customer.class);
         this.filter = new TextField();
         this.addNewBtn = new Button("Nueva Pelicula", VaadinIcon.PLUS.create());
 
         // build layout
         HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
-        add(actions, grid, editor);
+        add(actions, grid);
 
         grid.setHeight("300px");
 
@@ -63,18 +58,11 @@ public class MainView extends VerticalLayout {
 
         // Connect selected Customer to editor or hide if none is selected
         grid.asSingleSelect().addValueChangeListener(e -> {
-            //editor.editCustomer(e.getValue());
             modal(aut,e.getValue(),repo);
         });
 
         // Instantiate and edit new Customer the new button is clicked
         addNewBtn.addClickListener(e -> modalnuevapelicula(aut,repo));
-
-        // Listen changes made by the editor, refresh data from backend
-        editor.setChangeHandler(() -> {
-            editor.setVisible(false);
-            listCustomers(filter.getValue());
-        });
 
         // Initialize listing
         listCustomers(null);
@@ -102,7 +90,6 @@ public class MainView extends VerticalLayout {
                 dialog.add(new HorizontalLayout(new Html("<b>Autor: </b>"), new Text(autorActual.getNombre())));
                 dialog.add(new HorizontalLayout(new Html("<b>Enlace: </b>"), new Text(autorActual.getEnlace())));
             }
-            //dialog.add(new Text(c.getTitulo()));
             Button confirmButton = new Button("Editar", event -> { dialog.close(); modaleditar(aut,c,repo); });
             Button cancelButton = new Button("Cancelar", event -> { dialog.close(); });
             HorizontalLayout actions2 = new HorizontalLayout(confirmButton, cancelButton);
