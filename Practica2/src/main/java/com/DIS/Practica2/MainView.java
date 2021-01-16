@@ -1,5 +1,9 @@
 package com.DIS.Practica2;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -15,6 +19,9 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import org.springframework.util.StringUtils;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
 
 @Route
@@ -29,6 +36,8 @@ public class MainView extends VerticalLayout {
 
     private final Button addNewBtn;
 
+    private final Button Exportar;
+
 
     public MainView(AutoresBBDD aut,CustomerRepository repo) {
 
@@ -36,9 +45,10 @@ public class MainView extends VerticalLayout {
         this.grid = new Grid<>(Customer.class);
         this.filter = new TextField();
         this.addNewBtn = new Button("Nueva Pelicula", VaadinIcon.PLUS.create());
+        this.Exportar = new Button("Exportar", VaadinIcon.ARROW_CIRCLE_RIGHT.create());
 
         // build layout
-        HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
+        HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn,Exportar);
         add(actions, grid);
 
         grid.setHeight("300px");
@@ -63,6 +73,16 @@ public class MainView extends VerticalLayout {
 
         // Instantiate and edit new Customer the new button is clicked
         addNewBtn.addClickListener(e -> modalnuevapelicula(aut,repo));
+
+        Exportar.addClickListener(e ->
+                {
+                    try {
+                        guardamosenjson(aut,repo);
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                }
+                );
 
         // Initialize listing
         listCustomers(null);
@@ -217,5 +237,19 @@ public class MainView extends VerticalLayout {
         HorizontalLayout actions2 = new HorizontalLayout(confirmButton, cancelButton);
         dialog.add(actions2);
         dialog.open();
+    }
+    void guardamosenjson(AutoresBBDD aut,CustomerRepository repo) throws IOException {
+        String json2 = "{\"Success\":true,\"Message\":\"Invalid access token.\"}";
+        String json = "{\"Videoteca\":{\"Nombre\":\"Marcos\",\"Peliculas\":\"sdf\"}}";
+
+        List<Customer> custumers= repo.findAll();
+
+        Gson gson = new Gson();
+        JsonElement jelem = gson.fromJson(json, JsonElement.class);
+        JsonObject jobj = jelem.getAsJsonObject();
+        try (Writer writer = new FileWriter("Peliculas2.json")) {
+            Gson gson1 = new GsonBuilder().create();
+            gson1.toJson(jobj, writer);
+        }
     }
 }
