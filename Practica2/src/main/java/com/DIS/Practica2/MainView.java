@@ -107,7 +107,7 @@ public class MainView extends VerticalLayout {
             dialog.add(new HorizontalLayout(new Html("<b>Genero: </b>"), new Text(c.getGenero())));
             dialog.add(new HorizontalLayout(new Html("<b>IMBD: </b>"), new Text(c.getImbd())));
             for (autores autorActual : aut.findByIdPelicula(c.getId())) {
-                dialog.add(new HorizontalLayout(new Html("<b>Autor: </b>"), new Text(autorActual.getNombre())));
+                dialog.add(new HorizontalLayout(new Html("<b>Actor: </b>"), new Text(autorActual.getNombre())));
                 dialog.add(new HorizontalLayout(new Html("<b>Enlace: </b>"), new Text(autorActual.getEnlace())));
             }
             Button confirmButton = new Button("Editar", event -> { dialog.close(); modaleditar(aut,c,repo); });
@@ -144,10 +144,10 @@ public class MainView extends VerticalLayout {
         int i =0;
         for (autores autorActual : aut.findByIdPelicula(c.getId())) {
             todoslosatuores[i]=autorActual;
-            nombreautor[i] = new TextField("Nombre autor");
+            nombreautor[i] = new TextField("Nombre actor");
             nombreautor[i].setValue(autorActual.getNombre());
             dialog.add(new HorizontalLayout(nombreautor[i]));
-            enlaceautor[i] = new TextField("Enlace autor");
+            enlaceautor[i] = new TextField("Enlace actor");
             enlaceautor[i].setValue(autorActual.getEnlace());
             dialog.add(new HorizontalLayout(enlaceautor[i]));
             i++;
@@ -219,9 +219,9 @@ public class MainView extends VerticalLayout {
         TextField nombreautor[]= new TextField[numerodeactores];
         TextField enlaceautor[]= new TextField[numerodeactores];
         for(int i =0;i<numerodeactores;i++){
-            nombreautor[i] = new TextField("Nombre autor");
+            nombreautor[i] = new TextField("Nombre actor");
             dialog.add(new HorizontalLayout(nombreautor[i]));
-            enlaceautor[i] = new TextField("Enlace autor");
+            enlaceautor[i] = new TextField("Enlace actor");
             dialog.add(new HorizontalLayout(enlaceautor[i]));
         }
 
