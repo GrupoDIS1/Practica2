@@ -172,12 +172,46 @@ public class MainView extends VerticalLayout {
 
 
         Button confirmButton = new Button("Aceptar", event -> {
+
             Double nacto=NumeroActores.getValue();
-            int nmactores=nacto.intValue();
+            int nmactores=0;
+            if (nacto!=null) {
+                nmactores = nacto.intValue();
+            }
             Customer nuevo = new Customer(titulo.getValue(), Sinopsis.getValue(), Genero.getValue(), Imbd.getValue(), nmactores);
             repo.save(nuevo);
             listCustomers("");
             dialog.close();
+            if (nmactores>0) {
+                modalagregamosautores(aut, nmactores, nuevo.getId());
+            }
+        });
+        Button cancelButton = new Button("Cancelar", event -> { dialog.close(); });
+        HorizontalLayout actions2 = new HorizontalLayout(confirmButton, cancelButton);
+        dialog.add(actions2);
+        dialog.open();
+    }
+
+    void modalagregamosautores(AutoresBBDD aut,int numerodeactores,Long idpeli) {
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(false);
+        dialog.setCloseOnOutsideClick(false);
+        TextField nombreautor[]= new TextField[numerodeactores];
+        TextField enlaceautor[]= new TextField[numerodeactores];
+        for(int i =0;i<numerodeactores;i++){
+            nombreautor[i] = new TextField("Nombre autor");
+            dialog.add(new HorizontalLayout(nombreautor[i]));
+            enlaceautor[i] = new TextField("Enlace autor");
+            dialog.add(new HorizontalLayout(enlaceautor[i]));
+        }
+
+
+        Button confirmButton = new Button("Aceptar", event -> {
+            for(int i =0;i<numerodeactores;i++) {
+                autores nuevo = new autores(nombreautor[i].getValue(),enlaceautor[i].getValue(),idpeli);
+                aut.save(nuevo);
+                dialog.close();
+            }
         });
         Button cancelButton = new Button("Cancelar", event -> { dialog.close(); });
         HorizontalLayout actions2 = new HorizontalLayout(confirmButton, cancelButton);
