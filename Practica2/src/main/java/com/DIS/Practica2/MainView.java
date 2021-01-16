@@ -240,10 +240,22 @@ public class MainView extends VerticalLayout {
     }
     void guardamosenjson(AutoresBBDD aut,CustomerRepository repo) throws IOException {
         String json2 = "{\"Success\":true,\"Message\":\"Invalid access token.\"}";
-        String json = "{\"Videoteca\":{\"Nombre\":\"Marcos\",\"Peliculas\":\"sdf\"}}";
+        String json = "{\"Videoteca\":{\"Nombre\":\"Marcos\",\"Ubicacion\":\"sdf\",\"Fecha\":2020,\"Peliculas\":{\"Pelicula\":[";
 
-        List<Customer> custumers= repo.findAll();
+        List<Customer> peliculas= repo.findAll();
 
+        for(int i = 0; i < peliculas.size(); i++)
+        {
+            String titulo= peliculas.get(i).getTitulo();
+            String sinopsis= peliculas.get(i).getSinopsis();
+            String imbd= peliculas.get(i).getImbd();
+            String genero= peliculas.get(i).getGenero();
+            int numActores=peliculas.get(i).getNumeroDeActores();
+            json+="{\"Titulo\":\""+titulo+ "\",\"Sinopsis\":\""+sinopsis+ "\"},";
+        }
+
+        json = json.substring(0, json.length()-1);
+        json+="]}}}";
         Gson gson = new Gson();
         JsonElement jelem = gson.fromJson(json, JsonElement.class);
         JsonObject jobj = jelem.getAsJsonObject();
