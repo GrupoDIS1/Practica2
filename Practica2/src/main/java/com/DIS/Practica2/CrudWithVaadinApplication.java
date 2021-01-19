@@ -42,32 +42,35 @@ public class CrudWithVaadinApplication {
                     genero = ((JsonObject) demarc).get("Genero").getAsString();
                 }catch (Exception e) {
                     genero="None";
-                }
-                JsonObject autors = demarc.getAsJsonObject();
-                autors = autors.getAsJsonObject("Reparto");
+                }int numeroActores=0;
+                String[] nombreA = new String[10];
+                String[] enlaceP = new String[10];
+                try {
+                    JsonObject autors = demarc.getAsJsonObject();
+                    autors = autors.getAsJsonObject("Reparto");
+                    
 
-                int numeroActores=0;
-                String[] nombreA =new String[10];
-                String[] enlaceP =new String[10];
-                try{// si hay mas de un actor
-                    JsonArray autores = autors.get("Actor").getAsJsonArray();
-                    for (JsonElement demarc1 : autores) {
-                        String nmb=((JsonObject) demarc1).get("Nombre").getAsString();
-                        String EnlaceWiki=((JsonObject) demarc1).get("EnlaceWikipedia").getAsString();
-                        nombreA[numeroActores]=nmb;
-                        enlaceP[numeroActores]=EnlaceWiki;
-                        numeroActores+=1;
+                    try {// si hay mas de un actor
+                        JsonArray autores = autors.get("Actor").getAsJsonArray();
+                        for (JsonElement demarc1 : autores) {
+                            String nmb = ((JsonObject) demarc1).get("Nombre").getAsString();
+                            String EnlaceWiki = ((JsonObject) demarc1).get("EnlaceWikipedia").getAsString();
+                            nombreA[numeroActores] = nmb;
+                            enlaceP[numeroActores] = EnlaceWiki;
+                            numeroActores += 1;
+                        }
+                    } catch (Exception e1) {// si solo hay un actor, dara una excepcion y se metera aqui
+                        autors = autors.getAsJsonObject("Actor");
+                        numeroActores = 1;
+                        String nmb = autors.get("Nombre").getAsString();
+                        String EnlaceWiki = autors.get("EnlaceWikipedia").getAsString();
+                        nombreA[0] = nmb;
+                        enlaceP[0] = EnlaceWiki;
+
                     }
-                }catch (Exception e1) {// si solo hay un actor, dara una excepcion y se metera aqui
-                    autors = autors.getAsJsonObject("Actor");
-                    numeroActores=1;
-                    String nmb=autors.get("Nombre").getAsString();
-                    String EnlaceWiki=autors.get("EnlaceWikipedia").getAsString();
-                    nombreA[0]=nmb;
-                    enlaceP[0]=EnlaceWiki;
+                }catch (Exception e1) {
 
                 }
-
 
                 Customer nuevo = new Customer(titulo, sinopsis, genero, imbd, numeroActores);
                 repository.save(nuevo);

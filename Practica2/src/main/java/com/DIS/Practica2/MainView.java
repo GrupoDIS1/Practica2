@@ -240,7 +240,7 @@ public class MainView extends VerticalLayout {
     }
     void guardamosenjson(AutoresBBDD aut,CustomerRepository repo) throws IOException {
         String json2 = "{\"Success\":true,\"Message\":\"Invalid access token.\"}";
-        String json = "{\"Videoteca\":{\"Nombre\":\"Marcos\",\"Ubicacion\":\"sdf\",\"Fecha\":2020,\"Peliculas\":{\"Pelicula\":[";
+        String json = "{\"Videoteca\":{\"Nombre\":\"Marcos\",\"Ubicacion\":\"Madrid\",\"Fecha\":2020,\"Peliculas\":{\"Pelicula\":[";
 
         List<Customer> peliculas= repo.findAll();
 
@@ -250,16 +250,36 @@ public class MainView extends VerticalLayout {
             String sinopsis= peliculas.get(i).getSinopsis();
             String imbd= peliculas.get(i).getImbd();
             String genero= peliculas.get(i).getGenero();
+            Long idpelicula= peliculas.get(i).getId();
             int numActores=peliculas.get(i).getNumeroDeActores();
-            json+="{\"Titulo\":\""+titulo+ "\",\"Sinopsis\":\""+sinopsis+ "\"},";
+            json+="{\"Titulo\":\""+titulo+ "\",\"Sinopsis\":\""+sinopsis+ "\",\"Genero\":\""+genero+"\",\"IMBD\":\""+imbd+"\",";
+            if (numActores==0){
+                json = json.substring(0, json.length()-1);
+            }else{
+                List<autores> autorespeli=aut.findByIdPelicula(idpelicula);
+                json+="\"Reparto\":{\"Actor\":[";
+                for(int x = 0; x < autorespeli.size(); x++)
+                {
+                    String NombreAutor=autorespeli.get(x).getNombre();
+                    String EnlaceAutor=autorespeli.get(x).getEnlace();
+                    json+="{\"Nombre\":\""+NombreAutor+ "\",\"EnlaceWikipedia\":\""+EnlaceAutor+ "\"},";
+                }
+                json = json.substring(0, json.length()-1);
+                json+="]}";
+            }
+
+            json+="},";
         }
 
         json = json.substring(0, json.length()-1);
+
+
+
         json+="]}}}";
         Gson gson = new Gson();
         JsonElement jelem = gson.fromJson(json, JsonElement.class);
         JsonObject jobj = jelem.getAsJsonObject();
-        try (Writer writer = new FileWriter("Peliculas2.json")) {
+        try (Writer writer = new FileWriter("Peliculas.json")) {
             Gson gson1 = new GsonBuilder().create();
             gson1.toJson(jobj, writer);
         }
