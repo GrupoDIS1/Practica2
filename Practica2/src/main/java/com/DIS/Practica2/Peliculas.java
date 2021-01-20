@@ -13,19 +13,12 @@ public class Peliculas { // laa clase de las peliculas
     @Id
     @GeneratedValue
     private Long id;
-
     private String titulo;
-
     @Column(length=1000)
     private String sinopsis;
-
     private String genero;
-
     private String imbd;
-
     private int numeroDeActores;
-
-
     protected Peliculas() {
     }
     //creamos una nueva pelicula
