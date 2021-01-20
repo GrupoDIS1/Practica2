@@ -27,10 +27,10 @@ import java.util.List;
 @Route
 public class MainView extends VerticalLayout {
     //declaramos las variables
-    private final CustomerRepository repo;
+    private final PeliculasBBDD repo;
 
     //el grid
-    final Grid<Customer> grid;
+    final Grid<Peliculas> grid;
 
     final TextField filter;
 
@@ -39,10 +39,10 @@ public class MainView extends VerticalLayout {
     private final Button Exportar;
 
 
-    public MainView(AutoresBBDD aut,CustomerRepository repo) {
+    public MainView(ActoresBBDD aut,PeliculasBBDD repo) {
         //inicializamos las variables
         this.repo = repo;
-        this.grid = new Grid<>(Customer.class);
+        this.grid = new Grid<>(Peliculas.class);
         this.filter = new TextField();
         this.addNewBtn = new Button("Nueva Pelicula", VaadinIcon.PLUS.create());
         this.Exportar = new Button("Exportar", VaadinIcon.ARROW_CIRCLE_RIGHT.create());
@@ -103,7 +103,7 @@ public class MainView extends VerticalLayout {
         }
     }
     // el modal, aqui se abrir en detalle la pelicula clicada
-    void modal(AutoresBBDD aut,Customer c,CustomerRepository repo) {
+    void modal(ActoresBBDD aut,Peliculas c,PeliculasBBDD repo) {
         try{
             // declaramos el modal
             Dialog dialog = new Dialog();
@@ -115,7 +115,7 @@ public class MainView extends VerticalLayout {
             dialog.add(new HorizontalLayout(new Html("<b>Genero: </b>"), new Text(c.getGenero())));
             dialog.add(new HorizontalLayout(new Html("<b>IMBD: </b>"), new Text(c.getImbd())));
             // añadimos los autores
-            for (autores autorActual : aut.findByIdPelicula(c.getId())) {
+            for (Actores autorActual : aut.findByIdPelicula(c.getId())) {
                 dialog.add(new HorizontalLayout(new Html("<b>Actor: </b>"), new Text(autorActual.getNombre())));
                 dialog.add(new HorizontalLayout(new Html("<b>Enlace: </b>"), new Text(autorActual.getEnlace())));
             }
@@ -132,7 +132,7 @@ public class MainView extends VerticalLayout {
         }
     }
     // este modal es para poder editar
-    void modaleditar(AutoresBBDD aut,Customer c,CustomerRepository repo) {
+    void modaleditar(ActoresBBDD aut,Peliculas c,PeliculasBBDD repo) {
         //declaramos el modal
         Dialog dialog = new Dialog();
         dialog.setCloseOnEsc(false);
@@ -151,12 +151,12 @@ public class MainView extends VerticalLayout {
         Imbd.setValue(c.getImbd());
         dialog.add(new HorizontalLayout(Imbd));
         int numerodeactores = c.getNumeroDeActores();
-        autores todoslosatuores[]= new autores[numerodeactores];
+        Actores todoslosatuores[]= new Actores[numerodeactores];
         TextField nombreautor[]= new TextField[numerodeactores];
         TextField enlaceautor[]= new TextField[numerodeactores];
         int i =0;
         //ponemos los actores
-        for (autores autorActual : aut.findByIdPelicula(c.getId())) {
+        for (Actores autorActual : aut.findByIdPelicula(c.getId())) {
             todoslosatuores[i]=autorActual;
             nombreautor[i] = new TextField("Nombre actor");
             nombreautor[i].setValue(autorActual.getNombre());
@@ -194,7 +194,7 @@ public class MainView extends VerticalLayout {
     }
 
     //para añadir una nueva pelicula
-    void modalnuevapelicula(AutoresBBDD aut,CustomerRepository repo) {
+    void modalnuevapelicula(ActoresBBDD aut,PeliculasBBDD repo) {
         // declaramos el modal
         Dialog dialog = new Dialog();
         //ponemos los textView
@@ -224,7 +224,7 @@ public class MainView extends VerticalLayout {
                 nmactores = nacto.intValue();
             }
             //creamos y guardamos la nueva pelicula
-            Customer nuevo = new Customer(titulo.getValue(), Sinopsis.getValue(), Genero.getValue(), Imbd.getValue(), nmactores);
+            Peliculas nuevo = new Peliculas(titulo.getValue(), Sinopsis.getValue(), Genero.getValue(), Imbd.getValue(), nmactores);
             repo.save(nuevo);
             //actualizamos
             listCustomers("");
@@ -243,7 +243,7 @@ public class MainView extends VerticalLayout {
     }
     // segun el nuemro de actores que haya introducido el usaruio para la nueva pelicula, se pondran
     // los correspondientes TextView
-    void modalagregamosautores(AutoresBBDD aut,int numerodeactores,Long idpeli) {
+    void modalagregamosautores(ActoresBBDD aut,int numerodeactores,Long idpeli) {
         Dialog dialog = new Dialog();
         dialog.setCloseOnEsc(false);
         dialog.setCloseOnOutsideClick(false);
@@ -261,7 +261,7 @@ public class MainView extends VerticalLayout {
         // si pulsamos aceptar se guardan los nuevos actores
         Button confirmButton = new Button("Aceptar", event -> {
             for(int i =0;i<numerodeactores;i++) {
-                autores nuevo = new autores(nombreautor[i].getValue(),enlaceautor[i].getValue(),idpeli);
+                Actores nuevo = new Actores(nombreautor[i].getValue(),enlaceautor[i].getValue(),idpeli);
                 aut.save(nuevo);
                 dialog.close();
             }
@@ -272,11 +272,11 @@ public class MainView extends VerticalLayout {
         dialog.open();
     }
     // guardamos los dtaaos de la BBDD en el json
-    void guardamosenjson(AutoresBBDD aut,CustomerRepository repo) throws IOException {
+    void guardamosenjson(ActoresBBDD aut,PeliculasBBDD repo) throws IOException {
         String json2 = "{\"Success\":true,\"Message\":\"Invalid access token.\"}";
         String json = "{\"Videoteca\":{\"Nombre\":\"Marcos\",\"Ubicacion\":\"Madrid\",\"Fecha\":2020,\"Peliculas\":{\"Pelicula\":[";
         //extraemos todas las peliculas
-        List<Customer> peliculas= repo.findAll();
+        List<Peliculas> peliculas= repo.findAll();
         //vamos recorriendo todas las peliculas
         for(int i = 0; i < peliculas.size(); i++)
         {
@@ -291,7 +291,7 @@ public class MainView extends VerticalLayout {
                 // para el minar la ultima: ,
                 json = json.substring(0, json.length()-1);
             }else{// si hay actores
-                List<autores> autorespeli=aut.findByIdPelicula(idpelicula);
+                List<Actores> autorespeli=aut.findByIdPelicula(idpelicula);
                 json+="\"Reparto\":{\"Actor\":[";
                 // bucle para recorrer todos los actores
                 for(int x = 0; x < autorespeli.size(); x++)

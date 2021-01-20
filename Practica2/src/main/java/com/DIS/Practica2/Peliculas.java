@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Customer { // laa clase de las peliculas
+public class Peliculas { // laa clase de las peliculas
 
     @Id
     @GeneratedValue
@@ -26,10 +26,10 @@ public class Customer { // laa clase de las peliculas
     private int numeroDeActores;
 
 
-    protected Customer() {
+    protected Peliculas() {
     }
     //creamos una nueva pelicula
-    public Customer(String Titulo, String Sinopsis,String Genero,String IMBD,Integer numerodeactores) {
+    public Peliculas(String Titulo, String Sinopsis,String Genero,String IMBD,Integer numerodeactores) {
         this.titulo = Titulo;
         this.sinopsis = Sinopsis;
         this.genero = Genero;

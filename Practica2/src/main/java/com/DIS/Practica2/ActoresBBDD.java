@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface AutoresBBDD extends JpaRepository<autores, Long> {
-    List<autores> findByIdPelicula(Long i);
+public interface ActoresBBDD extends JpaRepository<Actores, Long> {
+    List<Actores> findByIdPelicula(Long i);
 }

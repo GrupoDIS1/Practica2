@@ -5,7 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class autores { // la clase actor tiene los elementos Idautor, nombre, enlace, idpelicula
+public class Actores { // la clase actor tiene los elementos Idautor, nombre, enlace, idpelicula
     @Id
     @GeneratedValue
     private Long idAutor;
@@ -15,10 +15,10 @@ public class autores { // la clase actor tiene los elementos Idautor, nombre, en
     private String enlace;
     private Long idPelicula;
 
-    protected autores() {
+    protected Actores() {
     }
     // para guardar un nuevo actor
-    public autores(String nombre, String enlace,Long idpelicula) {
+    public Actores(String nombre, String enlace, Long idpelicula) {
         this.nombre = nombre;
         this.enlace = enlace;
         this.idPelicula = idpelicula;

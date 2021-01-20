@@ -23,7 +23,7 @@ public class CrudWithVaadinApplication {
     }
 
     @Bean
-    public CommandLineRunner loadData(CustomerRepository repository,AutoresBBDD aut) throws FileNotFoundException {
+    public CommandLineRunner loadData(PeliculasBBDD repository,ActoresBBDD aut) throws FileNotFoundException {
         // abrimos el archivo .json
         // esto es como la practica 1
         JsonParser parser = new JsonParser();
@@ -75,13 +75,13 @@ public class CrudWithVaadinApplication {
 
                 }
                 //guardamos la pelicula
-                Customer nuevo = new Customer(titulo, sinopsis, genero, imbd, numeroActores);
+                Peliculas nuevo = new Peliculas(titulo, sinopsis, genero, imbd, numeroActores);
                 repository.save(nuevo);
                 Long idpeli=nuevo.getId();
                 //guardamos los autores, para asocicar los autores con las peliculas, lo que hacemos es
                 // pasar a la tabla de los actores el id de la pelicula, que esta asociada a dicho actor
                 for(int i=0;i<numeroActores;i++){
-                    autores nuevoAutor= new autores(nombreA[i],enlaceP[i],idpeli);
+                    Actores nuevoAutor= new Actores(nombreA[i],enlaceP[i],idpeli);
                     aut.save(nuevoAutor);
                 }
 
