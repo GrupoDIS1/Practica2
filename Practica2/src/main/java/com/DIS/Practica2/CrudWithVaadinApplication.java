@@ -24,15 +24,18 @@ public class CrudWithVaadinApplication {
 
     @Bean
     public CommandLineRunner loadData(CustomerRepository repository,AutoresBBDD aut) throws FileNotFoundException {
+        // abrimos el archivo .json
+        // esto es como la practica 1
         JsonParser parser = new JsonParser();
         Object object = parser.parse(new FileReader("Peliculas.json"));
         JsonObject gsonObj = (JsonObject) object;
+        //accedemos a la videoteca
         gsonObj = gsonObj.getAsJsonObject("Videoteca");
         gsonObj = gsonObj.getAsJsonObject("Peliculas");
         JsonArray demarcation = gsonObj.get("Pelicula").getAsJsonArray();
 
         return (args) -> {
-            // save customers
+            // extramoes todos los datos del archivo Peliculas.Json y los guardmaos en la base de Datos
             for (JsonElement demarc : demarcation) {
                 String titulo = ((JsonObject) demarc).get("Titulo").getAsString();
                 String sinopsis = ((JsonObject) demarc).get("Sinopsis").getAsString();
@@ -40,16 +43,16 @@ public class CrudWithVaadinApplication {
                 String genero;
                 try{
                     genero = ((JsonObject) demarc).get("Genero").getAsString();
-                }catch (Exception e) {
+                }catch (Exception e) { // por si no tiene genero
                     genero="None";
                 }int numeroActores=0;
-                String[] nombreA = new String[10];
+                String[] nombreA = new String[10]; // suponemos que el maximo nuemro de actores va a ser 10, esto se puede modificar
                 String[] enlaceP = new String[10];
                 try {
                     JsonObject autors = demarc.getAsJsonObject();
                     autors = autors.getAsJsonObject("Reparto");
                     
-
+                    // ponemos un try catch en el caso de que haya 1 actor o varios actores
                     try {// si hay mas de un actor
                         JsonArray autores = autors.get("Actor").getAsJsonArray();
                         for (JsonElement demarc1 : autores) {
@@ -71,10 +74,12 @@ public class CrudWithVaadinApplication {
                 }catch (Exception e1) {
 
                 }
-
+                //guardamos la pelicula
                 Customer nuevo = new Customer(titulo, sinopsis, genero, imbd, numeroActores);
                 repository.save(nuevo);
                 Long idpeli=nuevo.getId();
+                //guardamos los autores, para asocicar los autores con las peliculas, lo que hacemos es
+                // pasar a la tabla de los actores el id de la pelicula, que esta asociada a dicho actor
                 for(int i=0;i<numeroActores;i++){
                     autores nuevoAutor= new autores(nombreA[i],enlaceP[i],idpeli);
                     aut.save(nuevoAutor);
