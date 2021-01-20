@@ -11,6 +11,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -83,6 +84,8 @@ public class MainView extends VerticalLayout {
                     try {
                         //guardamos en el json
                         guardamosenjson(aut,repo);
+                        // notificacion, para avisar al usuario que se ha exportado correctamente
+                        Notification.show("Datos exportados correctamente a Peliculas.json");
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
