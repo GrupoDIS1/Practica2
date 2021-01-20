@@ -14,8 +14,10 @@ public class Peliculas { // laa clase de las peliculas
     @GeneratedValue
     private Long id;
     private String titulo;
+
     @Column(length=1000)
     private String sinopsis;
+
     private String genero;
     private String imbd;
     private int numeroDeActores;

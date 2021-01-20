@@ -215,7 +215,7 @@ public class MainView extends VerticalLayout {
         //declaramos el NumberField
         NumberField NumeroActores = new NumberField("Numero de Actores");;
         dialog.add(new HorizontalLayout(NumeroActores));
-
+        // si pulsa aceptar
         Button confirmButton = new Button("Aceptar", event -> {
 
             Double nacto=NumeroActores.getValue();
@@ -257,6 +257,7 @@ public class MainView extends VerticalLayout {
             enlaceautor[i] = new TextField("Enlace actor");
             dialog.add(new HorizontalLayout(enlaceautor[i]));
         }
+        // si pulsamos aceptar se guardan los nuevos actores
         Button confirmButton = new Button("Aceptar", event -> {
             for(int i =0;i<numerodeactores;i++) {
                 Actores nuevo = new Actores(nombreautor[i].getValue(),enlaceautor[i].getValue(),idpeli);
